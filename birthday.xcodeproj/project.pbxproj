@@ -14,6 +14,8 @@
 		F950CC3E26FBBAF80057470E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F950CC3C26FBBAF80057470E /* Main.storyboard */; };
 		F950CC4026FBBAFC0057470E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F950CC3F26FBBAFC0057470E /* Assets.xcassets */; };
 		F950CC4326FBBAFC0057470E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F950CC4126FBBAFC0057470E /* LaunchScreen.storyboard */; };
+		F9AE1D4A270387B8005AAE56 /* ImagePickerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AE1D49270387B8005AAE56 /* ImagePickerPresenting.swift */; };
+		F9AE1D4C27038825005AAE56 /* ImgViewConroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AE1D4B27038825005AAE56 /* ImgViewConroller.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		F950CC3F26FBBAFC0057470E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F950CC4226FBBAFC0057470E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F950CC4426FBBAFC0057470E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9AE1D49270387B8005AAE56 /* ImagePickerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerPresenting.swift; sourceTree = "<group>"; };
+		F9AE1D4B27038825005AAE56 /* ImgViewConroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImgViewConroller.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,8 @@
 				F950CC4126FBBAFC0057470E /* LaunchScreen.storyboard */,
 				F950CC4426FBBAFC0057470E /* Info.plist */,
 				F908E72D26FCDA110015E3CA /* BirthdayScreenViewController.swift */,
+				F9AE1D49270387B8005AAE56 /* ImagePickerPresenting.swift */,
+				F9AE1D4B27038825005AAE56 /* ImgViewConroller.swift */,
 			);
 			path = birthday;
 			sourceTree = "<group>";
@@ -141,7 +147,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F950CC3B26FBBAF80057470E /* SetDetailsViewController.swift in Sources */,
+				F9AE1D4A270387B8005AAE56 /* ImagePickerPresenting.swift in Sources */,
 				F950CC3726FBBAF80057470E /* AppDelegate.swift in Sources */,
+				F9AE1D4C27038825005AAE56 /* ImgViewConroller.swift in Sources */,
 				F950CC3926FBBAF80057470E /* SceneDelegate.swift in Sources */,
 				F908E72E26FCDA110015E3CA /* BirthdayScreenViewController.swift in Sources */,
 			);

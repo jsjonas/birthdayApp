@@ -7,14 +7,26 @@
 
 import UIKit
 
-class BirthdayScreenViewController: UIViewController {
+class BirthdayScreenViewController: UIViewController, ImagePickerPresenting {
+    
+    @IBOutlet weak var birthdayTitleHead: UILabel!
     
     @IBOutlet weak var backgroundImage: UIImageView!
+    
+    @IBOutlet weak var superviewBabyImage: UIView!
+    
     @IBOutlet weak var babyImage: UIImageView!
     
     @IBOutlet weak var backButton: UIButton!
     
     @IBOutlet weak var shareButton: UIButton!
+    
+    @IBOutlet weak var ageImage: UIImageView!
+    
+    @IBOutlet weak var birthdayTitleTail: UILabel!
+    
+    var babyProfile: (name: String, age: Date, picture: UIImage?)?
+    
     
     var cameraIcon: UIImageView!
     
@@ -22,18 +34,58 @@ class BirthdayScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setPhotoIcon()
+        setCameraIcon()
         
-        //        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "iOsBgElephant")!)
         let randomInt = Int.random(in: 1..<4)
-        
         setTheme(themeNumber: randomInt)
-        // Do any additional setup after loading the view.
+        
+        setBabyDetails()
+        
+    }
+    
+    func setBabyDetails() -> Void {
+        
+        setBirthOfDate()
+        
+        birthdayTitleHead.text = "TODAY \(babyProfile!.name.uppercased()) IS"
+        
+        if let imageBaby = babyProfile!.picture {
+            babyImage.image = imageBaby
+            babyImage.contentMode = .scaleToFill
+            babyImage.layer.cornerRadius = 0.5 * babyImage.frame.height
+        }
+        
+    }
+    
+    func setBirthOfDate() {
+        let calendar = Calendar.current
+        
+        let todayDate = calendar.startOfDay(for: Date())
+        let kidDateOfBirth = calendar.startOfDay(for: babyProfile!.age)
+        
+        let intervalDays = calendar.dateComponents([.day], from: kidDateOfBirth, to: todayDate)
+        
+        if intervalDays.day! < 31 {
+            ageImage.image = UIImage(named: "0")
+            birthdayTitleTail.text = "MONTH(S) OLD"
+        } else if (intervalDays.day! > 30 && intervalDays.day! < 365) {
+            
+            let intervalMonth = calendar.dateComponents([.month], from: kidDateOfBirth, to: todayDate)
+            
+            ageImage.image = UIImage(named: "\(intervalMonth.month!)")
+            birthdayTitleTail.text = "MONTH(S) OLD"
+        } else {
+            let intervalYear = calendar.dateComponents([.year], from: kidDateOfBirth, to: todayDate)
+            
+            ageImage.image = UIImage(named: "\(intervalYear.year!)")
+            birthdayTitleTail.text = "YEAR(S) OLD"
+        }
+        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        //        babyImage.layer.cornerRadius = 0.5 * babyImage.frame.height
+        //                babyImage.layer.cornerRadius = 0.5 * babyImage.frame.height
         
         cameraIcon.layoutIfNeeded()
         cameraIcon.layer.cornerRadius = 0.5 * cameraIcon.frame.height
@@ -46,13 +98,12 @@ class BirthdayScreenViewController: UIViewController {
     @IBAction func shareScreenshot(_ sender: Any) {
         
         setItemHidden(isHidden: true)
-        //Create the UIImage
+        
         let renderer = UIGraphicsImageRenderer(size: view.frame.size)
         let image = renderer.image(actions: { context in
             view.layer.render(in: context.cgContext)
         })
         
-        //Save it to the camera roll
         //        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
         setItemHidden(isHidden: false)
@@ -72,11 +123,33 @@ class BirthdayScreenViewController: UIViewController {
         cameraIcon.isHidden = isHidden
     }
     
-    func setPhotoIcon() -> Void {
+    @objc func pickImage(_ sender: Any) {
+        
+        presentImagePicker(completion: { [self] (image) in
+            
+            guard let validImage = image else {
+                return
+            }
+            
+            babyImage.contentMode = .scaleAspectFill
+            babyImage.image = validImage
+            SetDetailsViewController.saveData(image: validImage)
+            babyImage.layer.cornerRadius = 0.5 * babyImage.frame.height
+            //            cameraIcon.isHidden = true
+        })
+        
+        
+        
+        
+        
+    }
+    
+    func setCameraIcon() -> Void {
+        
         cameraIcon = UIImageView()
         cameraIcon.translatesAutoresizingMaskIntoConstraints = false
         cameraIcon.backgroundColor = .green
-        babyImage.addSubview(cameraIcon)
+        superviewBabyImage.addSubview(cameraIcon)
         
         cameraIcon.widthAnchor.constraint(equalToConstant: 40).isActive = true
         cameraIcon.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -87,6 +160,15 @@ class BirthdayScreenViewController: UIViewController {
         // position the little green circle using a multiplier on the right and bottom
         NSLayoutConstraint(item: cameraIcon!, attribute: .centerX, relatedBy: .equal, toItem: babyImage!, attribute: .trailing, multiplier: hMult, constant: 0).isActive = true
         NSLayoutConstraint(item: cameraIcon!, attribute: .centerY, relatedBy: .equal, toItem: babyImage!, attribute: .bottom, multiplier: vMult, constant: 0).isActive = true
+        
+        
+        // add gesture recognizer to camera icon
+        superviewBabyImage.isUserInteractionEnabled = true
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(pickImage(_:)))
+        cameraIcon.addGestureRecognizer(gestureRecognizer)
+        cameraIcon.isUserInteractionEnabled = true
+        
         
     }
     
@@ -130,12 +212,12 @@ class BirthdayScreenViewController: UIViewController {
     
     
     /*
-     // MARK: - Navigation
+     MARK: - Navigation
      
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     In a storyboard-based application, you will often want to do a little preparation before navigation
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
+     Get the new view controller using segue.destination.
+     Pass the selected object to the new view controller.
      }
      */
     

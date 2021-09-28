@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SetDetailsViewController: UIViewController {
+class SetDetailsViewController: UIViewController, ImagePickerPresenting {
     
     @IBOutlet weak var profileImage: UIImageView!
     
@@ -19,19 +19,19 @@ class SetDetailsViewController: UIViewController {
     
     var imagePicker = UIImagePickerController()
     
+    static let profilePngString = "profile.png"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
-        //        print(tomorrow)
-        birthDate.date = tomorrow!
+        setBabyProfileIfExist()
         
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+        
     }
     
     
@@ -41,7 +41,7 @@ class SetDetailsViewController: UIViewController {
             performSegue(withIdentifier: "fromSetDetailsSegue", sender: self)
             
         } else {
-            let alert = UIAlertController(title: "Empty Fields", message: "Please fill the baby name and picture", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Empty Fields", message: "Please fill the baby name and upload the baby picture", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil
             ))
             self.present(alert, animated: true, completion: nil)
@@ -53,71 +53,72 @@ class SetDetailsViewController: UIViewController {
     
     @IBAction func takePictureBtn(_ sender: Any) {
         
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: { _ in
-            self.openCamera()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Choose Photo", style: .default, handler: { _ in
-            self.openGallery()
-        }))
-        
-        alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
+        presentImagePicker(completion: { (image) in
+            
+            guard let validImage = image else {
+                return
+            }
+            
+            self.profileImage.image = validImage
+            SetDetailsViewController.saveData(image: validImage)
+        })
         
         
     }
     
-    func openCamera() {
-        
-        if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera)){
-            imagePicker.sourceType = UIImagePickerController.SourceType.camera
-            //If you dont want to edit the photo then you can set allowsEditing to false
-            imagePicker.allowsEditing = true
-            imagePicker.delegate = self
-            self.present(imagePicker, animated: true, completion: nil)
+    func setBabyProfileIfExist() -> Void {
+        if let image = loadJpeg(fileName: SetDetailsViewController.profilePngString) {
+            profileImage.image = image
         }
-        else{
-            let alert  = UIAlertController(title: "Warning", message: "You don't have camera", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-    
-    func openGallery() {
         
-        imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
-        //If you dont want to edit the photo then you can set allowsEditing to false
-        imagePicker.allowsEditing = true
-        imagePicker.delegate = self
-        self.present(imagePicker, animated: true, completion: nil)
+        if let date = UserDefaults.standard.object(forKey: "date_birth") as? Date {
+            let df = DateFormatter()
+            df.dateFormat = "dd/MM/yyyy"
+            birthDate.date = date
+            print(df.string(from: date))
+        } else {
+            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+            birthDate.date = tomorrow!
+        }
+        
+        if let nameString = UserDefaults.standard.object(forKey: "name") as? String {
+            name.text = nameString
+        }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? BirthdayScreenViewController {
-            //            vc?.date = self
-            //            vc?.pic = self
-            //            vc?.name = self
+            let kid = (name.text!, birthDate.date, profileImage.image)
+            
+            vc.babyProfile = kid
+
             
         }
     }
+    
+    static func saveData(image: UIImage) -> Void {
+        if let data = image.pngData() {
+            let filename = SetDetailsViewController.getDocumentsDirectory().appendingPathComponent(profilePngString)
+            try? data.write(to: filename)
+        }
+    }
+    
+    static func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    func loadJpeg(fileName: String) -> UIImage? {
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(fileName)
+        do {
+            let imageData = try Data(contentsOf: fileURL)
+            return UIImage(data: imageData)
+        } catch {
+            print("Error loading image : \(error)")
+        }
+        return nil
+    }
 }
 
-extension SetDetailsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
-            self.profileImage.image = editedImage
-        }
-        
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.isNavigationBarHidden = false
-        self.dismiss(animated: true, completion: nil)
-    }
-}
 
