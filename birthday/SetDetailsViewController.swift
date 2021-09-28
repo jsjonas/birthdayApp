@@ -90,10 +90,7 @@ class SetDetailsViewController: UIViewController, ImagePickerPresenting {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? BirthdayScreenViewController {
             let kid = (name.text!, birthDate.date, profileImage.image)
-            
             vc.babyProfile = kid
-
-            
         }
     }
     

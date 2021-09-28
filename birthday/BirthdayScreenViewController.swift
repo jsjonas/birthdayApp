@@ -67,7 +67,7 @@ class BirthdayScreenViewController: UIViewController, ImagePickerPresenting {
         
         if intervalDays.day! < 31 {
             ageImage.image = UIImage(named: "0")
-            birthdayTitleTail.text = "MONTH(S) OLD"
+            birthdayTitleTail.text = "MONTH OLD"
         } else if (intervalDays.day! > 30 && intervalDays.day! < 365) {
             
             let intervalMonth = calendar.dateComponents([.month], from: kidDateOfBirth, to: todayDate)
@@ -133,14 +133,11 @@ class BirthdayScreenViewController: UIViewController, ImagePickerPresenting {
             
             babyImage.contentMode = .scaleAspectFill
             babyImage.image = validImage
-            SetDetailsViewController.saveData(image: validImage)
             babyImage.layer.cornerRadius = 0.5 * babyImage.frame.height
-            //            cameraIcon.isHidden = true
+            
+            // save image
+            SetDetailsViewController.saveData(image: validImage)
         })
-        
-        
-        
-        
         
     }
     
@@ -162,7 +159,7 @@ class BirthdayScreenViewController: UIViewController, ImagePickerPresenting {
         NSLayoutConstraint(item: cameraIcon!, attribute: .centerY, relatedBy: .equal, toItem: babyImage!, attribute: .bottom, multiplier: vMult, constant: 0).isActive = true
         
         
-        // add gesture recognizer to camera icon
+        // add gesture recognizer to camera icon and make it clickable
         superviewBabyImage.isUserInteractionEnabled = true
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(pickImage(_:)))

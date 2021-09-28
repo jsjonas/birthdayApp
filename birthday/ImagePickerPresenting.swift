@@ -5,11 +5,8 @@
 //  Created by Jonas S on 28/09/2021.
 //
 
-import Foundation
 
 import UIKit
-import AVFoundation
-import Photos
 
 private var completionBlock: ((UIImage?) -> Void)?
 
@@ -37,16 +34,16 @@ extension ImagePickerPresenting where Self: UIViewController {
                 imagePickerViewController.allowsEditing = true
                 imagePickerViewController.imagePickerDelegate = self
                 self.present(imagePickerViewController, animated: true, completion: nil)
-
+                
                 
             }
             let gallery = UIAlertAction(title: "Choose Photo", style: .default) { (action) in
                 imagePickerViewController.sourceType = .photoLibrary
                 imagePickerViewController.imagePickerDelegate = self
                 imagePickerViewController.allowsEditing = true
-
+                
                 self.present(imagePickerViewController, animated: true, completion: nil)
-
+                
             }
             
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in

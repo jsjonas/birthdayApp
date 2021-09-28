@@ -5,7 +5,6 @@
 //  Created by Jonas S on 28/09/2021.
 //
 
-import Foundation
 import UIKit
 
 protocol ImagePickerControllerDelegate: AnyObject {
@@ -13,7 +12,7 @@ protocol ImagePickerControllerDelegate: AnyObject {
 }
 
 
-final  class ImagePickerController: UIImagePickerController {
+final class ImagePickerController: UIImagePickerController {
     weak var imagePickerDelegate: ImagePickerControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +22,7 @@ final  class ImagePickerController: UIImagePickerController {
 
 // MARK: - UIImagePickerControllerDelegate
 extension ImagePickerController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
